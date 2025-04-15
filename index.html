@@ -5,33 +5,44 @@
      crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sweet Coin</title>
+  <title>Smart Coin</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
+    * {
       margin: 0;
       padding: 0;
-      background: linear-gradient(to bottom right, #ffe6f0, #f3e5f5);
-      color: #4a148c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
       min-height: 100vh;
     }
 
-    .container {
+    /* Login page container */
+    .login-container {
       width: 100%;
       max-width: 400px;
-      background: #ffffffee;
+      background-color: #1e1e1e;
       border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      margin: 50px auto;
+    }
+
+    /* Dashboard page container */
+    .dashboard-container {
+      width: 100%;
+      min-height: 100vh;
+      background-color: #121212;
     }
 
     h2 {
       margin-top: 0;
       text-align: center;
-      color: #880e4f;
+      color: #4CAF50;
+      padding: 10px 0;
     }
 
     input[type="text"], button {
@@ -44,12 +55,14 @@
     }
 
     input[type="text"] {
-      border: 2px solid #ce93d8;
+      background-color: #2a2a2a;
+      border: 2px solid #388E3C;
+      color: #e0e0e0;
       outline: none;
     }
 
     button {
-      background: #f48fb1;
+      background-color: #4CAF50;
       color: white;
       border: none;
       cursor: pointer;
@@ -57,129 +70,202 @@
     }
 
     button:hover {
-      background: #ce93d8;
+      background-color: #388E3C;
     }
 
     .hidden {
       display: none;
     }
 
-    .earn-block {
-      background: #fbe9f0;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 16px;
-      border: 1px solid #f8bbd0;
+    #login-error {
+      margin-top: 10px;
+      color: #f44336;
+      text-align: center;
     }
 
-    .earn-block p {
-      margin: 6px 0;
+    /* Header styling */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: #1e1e1e;
+      border-bottom: 1px solid #333;
+    }
+
+    .header-left {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 8px 30px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .header-button:hover {
+      background-color: #4CAF50;
+    }
+
+    .highlighted {
+      border: 2px solid red;
       font-weight: bold;
     }
 
-    #login-error {
-      margin-top: 10px;
-      color: red;
-      text-align: center;
+    /* Content styling */
+    .dashboard-content {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .earn-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 20px;
-}
 
-.earn-box {
-  background: #fbe9f0;
-  border: 1px solid #f8bbd0;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
 
-.earn-box.highlight {
-  background: #fce4ec;
-}
+    .card {
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      border: 1px solid #333;
+    }
 
-.label {
-  font-size: 14px;
-  color: #6a1b9a;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
+    .card-title {
+      font-size: 18px;
+      margin-bottom: 4px;
+      font-weight: 600;
+      color: #A5D6A7;
+    }
 
-.value {
-  font-size: 20px;
-  color: #ad1457;
-  margin: 4px 0;
-}
+    .card-value {
+      font-size: 20px;
+      margin: 4px 0;
+      font-weight: bold;
+      color: #4CAF50;
+    }
 
-.value.large {
-  font-size: 26px;
-  font-weight: bold;
-}
+    .unit {
+      font-size: 12px;
+      color: #81C784;
+    }
 
-.unit {
-  font-size: 12px;
-  color: #8e24aa;
-}
-.earn-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 16px;
-}
+    .recommendation-box {
+      background-color: #2a2a2a;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 16px;
+      border: 1px solid #333;
+    }
 
-.earn-box {
-  flex: 1;
-  background: #fbe9f0;
-  border: 1px solid #f8bbd0;
-  border-radius: 12px;
-  padding: 16px 12px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
+    .recommendation-title {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #4CAF50;
+      font-weight: bold;
+    }
 
-.earn-box p {
-  margin: 0;
-  font-weight: bold;
-  color: #880e4f;
-}
+    .main-ad-container {
+      margin-top: 20px;
+      background-color: #2a2a2a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.earn-box span {
-  font-size: 18px;
-  font-weight: bold;
-  display: block;
-  margin-top: 6px;
-  color: #4a148c;
-}
-#ads-page {
-  width: 70%;
-  max-width: 800px;
-}
+    .main-ad-content {
+      color: #aaa;
+      font-size: 20px;
+    }
 
-@media (max-width: 768px) {
-  #ads-page {
-    width: 90%;
-  }
-}
-@media (max-width: 480px) {
-  .earn-row {
-    flex-direction: column;
-  }
-}
-/* Responsive on small screens */
-@media (max-width: 480px) {
-  .earn-grid {
-    grid-template-columns: 1fr;
-  }
-}
+    .bottom-ads {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 20px;
+    }
 
-    @media (max-width: 480px) {
-      .container {
-        margin: 20px;
-        padding: 16px;
+    .ad-box {
+      flex: 1;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      border: 1px solid #333;
+      color: #aaa;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+      
+    }
+    .signout {
+        background-color: red;
+    }
+
+    .footer {
+      background-color: #1e1e1e;
+      padding: 15px;
+      text-align: center;
+      border-top: 1px solid #333;
+      color: #888;
+      position: sticky;
+      bottom: 0;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .header-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .dashboard-content {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .bottom-ads {
+        flex-direction: column;
       }
     }
   </style>
@@ -187,34 +273,62 @@
 <body>
 
   <!-- Login Page -->
-  <div id="login-page" class="container">
-    <h2>เข้าสู่ระบบ</h2>
-    <input type="text" id="userid-input" placeholder="User ID" />
+  <div id="login-page" class="login-container">
+    <h2>Sweet Coin</h2>
+    <input type="text" id="userid-input" placeholder="กรอก User ID" />
     <button onclick="login()">เข้าสู่ระบบ</button>
     <p id="login-error"></p>
   </div>
 
-  <!-- Ads Page -->
-  <div id="ads-page" class="hidden container">
-    <h2>ยินดีต้อนรับ <span id="user-id"></span></h2>
+  <!-- Dashboard Page (Fullscreen) -->
+  <div id="ads-page" class="hidden dashboard-container">
+    <div class="header">
+      <div class="header-left">Sweet Coin, <span id="user-id"></span></div>
+      <div class="header-right">
 
-  <div class="earn-row">
-  <div class="earn-box">
-    <p>วันนี้</p>
-    <span id="today-earn">0</span> Coin
-  </div>
-  <div class="earn-box">
-    <p>เดือนนี้</p>
-    <span id="month-earn">0</span> Coin
-  </div>
-  <div class="earn-box">
-    <p>รวม</p>
-    <span id="total-earn">0</span> Coin
-  
-</div>
-</div>
+        <button class="header-button highlighted" onclick="logout()">ออกจากระบบ</button>
+      </div>
+    </div>
 
-    <button onclick="watchAd()">ดูโฆษณา</button>
+    <div class="dashboard-content">
+      <div class="card-container">
+        <div class="card">
+          <div class="card-title">รายได้วันนี้</div>
+          <div class="card-value" id="today-earn">0</div>
+        
+        </div>
+        <div class="card">
+          <div class="card-title">รายได้เดือนนี้</div>
+          <div class="card-value" id="month-earn">0</div>
+        
+        </div>
+        <div class="card">
+          <div class="card-title">ยอดรวม</div>
+          <div class="card-value" id="total-earn">0</div>
+       
+        </div>
+      </div>
+ <div class="recommendation-box">
+        <div class="recommendation-title">อัปเดตใหม่! [1.0.0]</div>
+        <p>-</p>
+      </div>
+      <div class="recommendation-box">
+        <div class="recommendation-title">คำแนะนำ</div>
+        <p>หากต้องการรายได้ที่มากขึ้น โปรดให้คนที่สมัครระบุโค้ดเชิญเพื่อนของคุณ</p>
+      </div>
+
+      <div class="main-ad-container">
+        <div class="main-ad-content">พื้นที่สำหรับโฆษณาหลัก</div>
+      </div>
+
+    
+
+    
+    </div>
+
+    <div class="footer">
+      Smart Coin © 2025 - All Rights Reserved
+    </div>
   </div>
 
   <script type="module">
@@ -273,6 +387,14 @@
       alert("ได้รับ " + reward.toFixed(3) + " Coin");
     }
 
+    function logout() {
+      currentUserID = "";
+      document.getElementById("login-page").classList.remove("hidden");
+      document.getElementById("ads-page").classList.add("hidden");
+      document.getElementById("userid-input").value = "";
+      document.getElementById("login-error").textContent = "";
+    }
+
     async function loadEarnings() {
       const now = new Date();
       const dateStr = now.toISOString().split("T")[0];
@@ -280,14 +402,14 @@
 
       const snapshot = await get(ref(db, "users/" + currentUserID));
       const data = snapshot.exists() ? snapshot.val() : {};
-
-      document.getElementById("today-earn").textContent = (data.daily?.[dateStr] || 0).toFixed(3);
-      document.getElementById("month-earn").textContent = (data.monthly?.[monthStr] || 0).toFixed(3);
-      document.getElementById("total-earn").textContent = (data.total || 0).toFixed(3);
+document.getElementById("today-earn").textContent = (data.daily?.[dateStr] || 0).toFixed(3) + " ฿";
+document.getElementById("month-earn").textContent = (data.monthly?.[monthStr] || 0).toFixed(3) + " ฿";
+document.getElementById("total-earn").textContent = (data.total || 0).toFixed(3) + " ฿";
     }
 
     window.login = login;
     window.watchAd = watchAd;
+    window.logout = logout;
   </script>
 
 </body>
