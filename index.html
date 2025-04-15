@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sweet Coin</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, #ffe6f0, #f3e5f5);
+      color: #4a148c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: #ffffffee;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      text-align: center;
+      color: #880e4f;
+    }
+
+    input[type="text"], button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"] {
+      border: 2px solid #ce93d8;
+      outline: none;
+    }
+
+    button {
+      background: #f48fb1;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #ce93d8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .earn-block {
+      background: #fbe9f0;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 16px;
+      border: 1px solid #f8bbd0;
+    }
+
+    .earn-block p {
+      margin: 6px 0;
+      font-weight: bold;
+    }
+
+    #login-error {
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+    }
+    .earn-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.earn-box {
+  background: #fbe9f0;
+  border: 1px solid #f8bbd0;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.earn-box.highlight {
+  background: #fce4ec;
+}
+
+.label {
+  font-size: 14px;
+  color: #6a1b9a;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 20px;
+  color: #ad1457;
+  margin: 4px 0;
+}
+
+.value.large {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.unit {
+  font-size: 12px;
+  color: #8e24aa;
+}
+.earn-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.earn-box {
+  flex: 1;
+  background: #fbe9f0;
+  border: 1px solid #f8bbd0;
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.earn-box p {
+  margin: 0;
+  font-weight: bold;
+  color: #880e4f;
+}
+
+.earn-box span {
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+  margin-top: 6px;
+  color: #4a148c;
+}
+#ads-page {
+  width: 70%;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  #ads-page {
+    width: 90%;
+  }
+}
+@media (max-width: 480px) {
+  .earn-row {
+    flex-direction: column;
+  }
+}
+/* Responsive on small screens */
+@media (max-width: 480px) {
+  .earn-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div id="login-page" class="container">
+    <h2>เข้าสู่ระบบ</h2>
+    <input type="text" id="userid-input" placeholder="User ID" />
+    <button onclick="login()">เข้าสู่ระบบ</button>
+    <p id="login-error"></p>
+  </div>
+
+  <!-- Ads Page -->
+  <div id="ads-page" class="hidden container">
+    <h2>ยินดีต้อนรับ <span id="user-id"></span></h2>
+
+  <div class="earn-row">
+  <div class="earn-box">
+    <p>วันนี้</p>
+    <span id="today-earn">0</span> Coin
+  </div>
+  <div class="earn-box">
+    <p>เดือนนี้</p>
+    <span id="month-earn">0</span> Coin
+  </div>
+  <div class="earn-box">
+    <p>รวม</p>
+    <span id="total-earn">0</span> Coin
+  
+</div>
+</div>
+
+    <button onclick="watchAd()">ดูโฆษณา</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-S3Jhk-7OoeE9x315txFePtkWfG2ChmE",
+      authDomain: "sweet-coin-8bd57.firebaseapp.com",
+      projectId: "sweet-coin-8bd57",
+      storageBucket: "sweet-coin-8bd57.appspot.com",
+      messagingSenderId: "574118301665",
+      appId: "1:574118301665:web:181615c12ffe961706cca0",
+      measurementId: "G-1LVQD1WSR5",
+      databaseURL: "https://sweet-coin-8bd57-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let currentUserID = "";
+
+    async function login() {
+      const inputID = document.getElementById("userid-input").value.trim();
+      if (!inputID) return;
+
+      const snapshot = await get(ref(db, "users/" + inputID));
+      if (snapshot.exists()) {
+        currentUserID = inputID;
+        document.getElementById("login-page").classList.add("hidden");
+        document.getElementById("ads-page").classList.remove("hidden");
+        document.getElementById("user-id").textContent = currentUserID;
+        loadEarnings();
+      } else {
+        document.getElementById("login-error").textContent = "User ID ไม่ถูกต้อง";
+      }
+    }
+
+    async function watchAd() {
+      const reward = parseFloat((Math.random() * (0.01 - 0.001) + 0.001).toFixed(3));
+      const now = new Date();
+      const dateStr = now.toISOString().split("T")[0];
+      const monthStr = dateStr.slice(0, 7);
+
+      const userRef = ref(db, "users/" + currentUserID);
+      const snapshot = await get(userRef);
+      let data = snapshot.exists() ? snapshot.val() : {};
+
+      data.total = (data.total || 0) + reward;
+      data.daily = data.daily || {};
+      data.daily[dateStr] = (data.daily[dateStr] || 0) + reward;
+      data.monthly = data.monthly || {};
+      data.monthly[monthStr] = (data.monthly[monthStr] || 0) + reward;
+
+      await set(userRef, data);
+      loadEarnings();
+      alert("ได้รับ " + reward.toFixed(3) + " Coin");
+    }
+
+    async function loadEarnings() {
+      const now = new Date();
+      const dateStr = now.toISOString().split("T")[0];
+      const monthStr = dateStr.slice(0, 7);
+
+      const snapshot = await get(ref(db, "users/" + currentUserID));
+      const data = snapshot.exists() ? snapshot.val() : {};
+
+      document.getElementById("today-earn").textContent = (data.daily?.[dateStr] || 0).toFixed(3);
+      document.getElementById("month-earn").textContent = (data.monthly?.[monthStr] || 0).toFixed(3);
+      document.getElementById("total-earn").textContent = (data.total || 0).toFixed(3);
+    }
+
+    window.login = login;
+    window.watchAd = watchAd;
+  </script>
+
+</body>
+</html>
